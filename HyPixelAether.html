@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Servidor - MINECRAFT JAVA Y BEDROCK EDITION</title>
+
+    <!-- Fuente pixelada para el título -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+    <style>
+        :root{
+            --bg:#0b1220;
+            --card:#0f1a2b;
+            --accent:#6ee7b7;
+            --muted:#9fb0c8;
+        }
+
+        html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
+        body{
+            background: linear-gradient(180deg, #071021 0%, #071a2b 60%), radial-gradient(1200px 600px at 10% 10%, rgba(110,231,183,0.04), transparent 10%);
+            color:#e6f0fb;
+            -webkit-font-smoothing:antialiased;
+            -moz-osx-font-smoothing:grayscale;
+            padding:2.5rem;
+        }
+
+        /* Logo flotante arriba a la izquierda */
+        .logo-outer{
+            position:fixed;
+            top:18px;
+            left:18px;
+            width:72px;
+            height:72px;
+            z-index:50;
+            filter:drop-shadow(0 6px 18px rgba(2,6,23,0.7));
+            cursor:default;
+            user-select:none;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            transform-origin:center;
+            animation: float 4s ease-in-out infinite;
+        }
+        @keyframes float{
+            0%{transform: translateY(0) rotate(-1deg)}
+            50%{transform: translateY(-8px) rotate(1deg)}
+            100%{transform: translateY(0) rotate(-1deg)}
+        }
+        /* Pixel-art "logo" (estilo bloque) */
+        .logo-svg{
+            width:64px;
+            height:64px;
+            image-rendering:pixelated;
+            shape-rendering:crispEdges;
+            image-rendering: -webkit-optimize-contrast;
+        }
+
+        main{
+            max-width:980px;
+            margin:0 auto;
+            display:grid;
+            grid-template-columns:1fr;
+            gap:1.25rem;
+        }
+
+        header{
+            display:flex;
+            align-items:center;
+            gap:1rem;
+        }
+
+        /* TÍTULO: mayúsculas y pixelado (solo el título) */
+        .title{
+            font-family: "Press Start 2P", monospace;
+            font-size:20px;
+            letter-spacing:1px;
+            text-transform:uppercase; /* Asegura mayúsculas */
+            color:var(--accent);
+            margin:0;
+            line-height:1;
+            text-shadow: 0 2px 0 rgba(2,6,23,0.6);
+        }
+
+        .subtitle{
+            font-size:13px;
+            color:var(--muted);
+            margin:0;
+        }
+
+        .card{
+            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+            border:1px solid rgba(255,255,255,0.03);
+            padding:1.25rem;
+            border-radius:12px;
+            box-shadow: 0 6px 24px rgba(2,6,23,0.5);
+        }
+
+        .grid{
+            display:grid;
+            grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+            gap:1rem;
+        }
+
+        .server-block{
+            background: linear-gradient(180deg, rgba(255,255,255,0.015), transparent);
+            border-radius:8px;
+            padding:1rem;
+            display:flex;
+            flex-direction:column;
+            gap:0.5rem;
+            align-items:flex-start;
+        }
+
+        .server-name{
+            font-weight:700;color:#fff;font-size:13px;
+        }
+        .server-desc{font-size:13px;color:var(--muted)}
+        .ip{
+            margin-top:0.25rem;
+            font-family:monospace;
+            background:rgba(0,0,0,0.16);
+            padding:0.4rem 0.6rem;
+            border-radius:6px;
+            color:#dff9ed;
+        }
+
+        .btn{
+            border:0;
+            padding:0.45rem 0.75rem;
+            border-radius:8px;
+            background:linear-gradient(180deg,var(--accent), #2ad09a);
+            color:#032018;
+            font-weight:700;
+            cursor:pointer;
+            margin-left:auto;
+            box-shadow: 0 6px 18px rgba(46, 189, 145, 0.12);
+        }
+
+        .row{display:flex;gap:0.5rem;align-items:center;width:100%}
+        footer{margin-top:1rem;color:var(--muted);font-size:13px;text-align:center}
+        @media (max-width:520px){
+            .title{font-size:14px}
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Logo flotante pixelado (SVG de bloque estilo "grass block" simple) -->
+    <div class="logo-outer" title="Servidor">
+        <svg class="logo-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+            <!-- capa superior: césped (verde) -->
+            <rect x="0" y="0" width="64" height="16" fill="#63b54c"/>
+            <rect x="0" y="16" width="64" height="4" fill="#3f8f2f"/>
+            <!-- cuerpo: tierra -->
+            <rect x="0" y="20" width="64" height="28" fill="#8b5a32"/>
+            <!-- sombreado y pixeles -->
+            <rect x="6" y="24" width="6" height="6" fill="#6e3f1e"/>
+            <rect x="36" y="28" width="4" height="4" fill="#5b3822"/>
+            <rect x="48" y="30" width="3" height="3" fill="#6e3f1e"/>
+            <!-- borde -->
+            <rect x="0" y="48" width="64" height="16" fill="#4a2f20"/>
+            <!-- contorno tenue -->
+            <rect x="0.5" y="0.5" width="63" height="63" fill="none" stroke="#00000033" stroke-width="1"/>
+        </svg>
+    </div>
+
+    <main>
+        <header>
+            <div>
+                <h1 class="title">MINECRAFT JAVA Y BEDROCK EDITION</h1>
+                <p class="subtitle">Página informativa del servidor — compatible con Java y Bedrock</p>
+            </div>
+        </header>
+
+        <section class="card">
+            <div class="grid">
+                <div class="server-block">
+                    <div class="row" style="width:100%">
+                        <div>
+                            <div class="server-name">Servidor Java</div>
+                            <div class="server-desc">Conéctate usando la IP y puerto de Java (ativa plugins/mods según configuración).</div>
+                            <div class="ip" id="java-ip">play.ejemplo-servidor.com:25565</div>
+                        </div>
+                        <button class="btn" data-copy="#java-ip">COPIAR</button>
+                    </div>
+                </div>
+
+                <div class="server-block">
+                    <div class="row" style="width:100%">
+                        <div>
+                            <div class="server-name">Servidor Bedrock</div>
+                            <div class="server-desc">Usa esta IP en la edición Bedrock (móvil/Windows 10/Consolas).</div>
+                            <div class="ip" id="bedrock-ip">play.ejemplo-servidor.com:19132</div>
+                        </div>
+                        <button class="btn" data-copy="#bedrock-ip">COPIAR</button>
+                    </div>
+                </div>
+
+                <div class="server-block" style="grid-column: span 2;">
+                    <div class="server-name">Estado</div>
+                    <div class="server-desc" id="status">Comprobando estado del servidor...</div>
+                    <div style="margin-top:0.6rem;font-size:13px;color:var(--muted)">Última comprobación: <span id="checked-time">—</span></div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="card">
+            <div style="font-size:13px;color:var(--muted)">Página generada localmente. Cambia las IPs por las reales de tu servidor.</div>
+        </footer>
+    </main>
+
+    <script>
+        // Copiar IP al portapapeles
+        document.querySelectorAll('[data-copy]').forEach(btn=>{
+            btn.addEventListener('click', async ()=>{
+                const sel = document.querySelector(btn.getAttribute('data-copy'));
+                if(!sel) return;
+                try{
+                    await navigator.clipboard.writeText(sel.textContent.trim());
+                    btn.textContent = 'COPIADO';
+                    setTimeout(()=> btn.textContent = 'COPIAR',1400);
+                }catch(e){
+                    btn.textContent = 'ERROR';
+                    setTimeout(()=> btn.textContent = 'COPIAR',1400);
+                }
+            });
+        });
+
+        // Simular comprobación de estado (reemplaza con petición real a tu API/servicio)
+        function checkServer(){
+            const statusEl = document.getElementById('status');
+            const t = new Date();
+            document.getElementById('checked-time').textContent = t.toLocaleTimeString();
+            // Simulación: alterna online/offline
+            const online = Math.random() > 0.25;
+            if(online){
+                statusEl.textContent = 'ONLINE — 12 jugadores';
+                statusEl.style.color = '#bff8df';
+            }else{
+                statusEl.textContent = 'OFFLINE — no responde';
+                statusEl.style.color = '#f8c6c6';
+            }
+        }
+        checkServer();
+        setInterval(checkServer, 15000);
+    </script>
+
+</body>
+</html>
