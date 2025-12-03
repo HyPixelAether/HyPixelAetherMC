@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Servidor - MINECRAFT JAVA Y BEDROCK EDITION</title>
+
+    <!-- Fuente pixelada para el título -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+    <style>
+        :root{
+            --bg:#0b1220;
+            --card:#0f1a2b;
+            --accent:#6ee7b7;
+            --muted:#9fb0c8;
+        }
+
+        /* Usar la fuente pixelada de "Press Start 2P" para TODO el texto */
+        html,body{
+            height:100%;
+            margin:0;
+            /* sustituir la familia por la fuente pixelada (fallback monospace) */
+            font-family: "Press Start 2P", monospace;
+            /* aumentar tamaño base y espaciado para mejorar legibilidad */
+            font-size:14px;
+            letter-spacing: 0.12em;
+        }
+        body{
+            background: linear-gradient(180deg, #071021 0%, #071a2b 60%), radial-gradient(1200px 600px at 10% 10%, rgba(110,231,183,0.04), transparent 10%);
+            color:#e6f0fb;
+            /* volver a suavizado para mejorar lectura con la fuente pixelada */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            padding:2.5rem;
+        }
+
+        /* Logo flotante arriba a la izquierda */
+        .logo-outer{
+            position:fixed;
+            top:18px;
+            left:18px;
+            width:72px;
+            height:72px;
+            z-index:50;
+            filter:drop-shadow(0 6px 18px rgba(2,6,23,0.7));
+            cursor:default;
+            user-select:none;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            transform-origin:center;
+            animation: float 4s ease-in-out infinite;
+        }
+        @keyframes float{
+            0%{transform: translateY(0) rotate(-1deg)}
+            50%{transform: translateY(-8px) rotate(1deg)}
+            100%{transform: translateY(0) rotate(-1deg)}
+        }
+        /* Pixel-art "logo" (estilo bloque) */
+        .logo-svg{
+            width:64px;
+            height:64px;
+            image-rendering:pixelated;
+            shape-rendering:crispEdges;
+            image-rendering: -webkit-optimize-contrast;
+        }
+
+        main{
+            max-width:980px;
+            margin:0 auto;
+            display:grid;
+            grid-template-columns:1fr;
+            gap:1.25rem;
+        }
+
+        header{
+            display:flex;
+            align-items:center;
+            gap:1rem;
+        }
+
+        /* TÍTULO: mayúsculas y pixelado (solo el título) */
+        .title{
+            font-family: "Press Start 2P", monospace;
+            font-size:18px;
+            /* aumentar espaciado en el título */
+            letter-spacing:0.16em;
+            text-transform:uppercase;
+            color:var(--accent);
+            margin:0;
+            line-height:1;
+            text-shadow: 0 2px 0 rgba(2,6,23,0.6);
+        }
+
+        .subtitle{
+            font-size:11px;
+            color:var(--muted);
+            margin:0;
+            letter-spacing:0.12em;
+        }
+
+        .card{
+            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+            border:1px solid rgba(255,255,255,0.03);
+            padding:1.25rem;
+            border-radius:12px;
+            box-shadow: 0 6px 24px rgba(2,6,23,0.5);
+        }
+
+        .grid{
+            display:grid;
+            grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+            gap:1rem;
+        }
+
+        .server-block{
+            background: linear-gradient(180deg, rgba(255,255,255,0.015), transparent);
+            border-radius:8px;
+            padding:1rem;
+            display:flex;
+            flex-direction:column;
+            gap:0.5rem;
+            align-items:flex-start;
+        }
+
+        .server-name{
+            font-weight:700;
+            color:#fff;
+            font-size:12px;
+            letter-spacing:0.12em;
+        }
+        .server-desc{
+            font-size:11px;
+            color:var(--muted);
+            letter-spacing:0.12em;
+        }
+        .ip{
+            margin-top:0.25rem;
+            font-family: "Press Start 2P", monospace;
+            background:rgba(0,0,0,0.16);
+            padding:0.4rem 0.6rem;
+            border-radius:6px;
+            color:#dff9ed;
+            font-size:11px;
+            letter-spacing:0.16em;
+        }
+
+        .btn{
+            border:0;
+            padding:0.45rem 0.75rem;
+            border-radius:8px;
+            background:linear-gradient(180deg,var(--accent), #2ad09a);
+            color:#032018;
+            font-weight:700;
+            cursor:pointer;
+            margin-left:auto;
+            box-shadow: 0 6px 18px rgba(46, 189, 145, 0.12);
+            font-size:11px;
+            letter-spacing:0.12em;
+        }
+
+        /* Kebab menu */
+        .kebab{
+            margin-left:auto;
+            position:relative;
+        }
+        .kebab-btn{
+            background:transparent;
+            border:0;
+            color:var(--muted);
+            font-size:20px;
+            padding:6px;
+            cursor:pointer;
+            border-radius:6px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            width:40px;
+            height:40px;
+        }
+        .kebab-menu{
+            position:absolute;
+            right:0;
+            /* colocar justo debajo del botón */
+            top: calc(100% + 6px);
+            background:var(--card);
+            border:1px solid rgba(255,255,255,0.03);
+            border-radius:8px;
+            padding:8px;
+            display:none;
+            min-width:180px;
+            box-shadow:0 10px 30px rgba(2,6,23,0.6);
+            z-index:1000;
+            /* organizar opciones en columna y que el contenedor crezca con su contenido */
+            display:block; /* keep it block by default for measurement, hidden via .kebab-menu:not(.open){display:none} below */
+            box-sizing:border-box;
+        }
+        /* ocultar por defecto; mostrar con .open */
+        .kebab-menu:not(.open){ display:none; }
+        .kebab-menu.open{ display:block; }
+        .kebab-menu{ display:flex; flex-direction:column; gap:6px; }
+        .kebab-menu button{
+            display:block;
+            width:100%;
+            box-sizing:border-box;
+            text-align:left;
+            background:transparent;
+            border:0;
+            color:var(--muted);
+            padding:8px 10px;
+            cursor:pointer;
+            font-family:"Press Start 2P", monospace;
+            font-size:11px;
+            border-radius:6px;
+            letter-spacing:0.10em;
+        }
+
+        /* Loader overlay + spinner */
+        .loader-overlay{
+            position:fixed;
+            inset:0;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background:rgba(2,6,23,0.6);
+            z-index:60;
+            opacity:0;
+            pointer-events:none;
+            transition:opacity .28s ease;
+        }
+        .loader-overlay.show{ opacity:1; pointer-events:auto; }
+        .spinner{
+            width:64px;height:64px;border-radius:8px;
+            background:linear-gradient(180deg,#0f1a2b,#0b1220);
+            display:flex;align-items:center;justify-content:center;
+            box-shadow: 0 6px 20px rgba(2,6,23,0.7);
+            border:4px solid rgba(110,231,183,0.08);
+        }
+        .spinner::after{
+            content:'';
+            width:28px;height:28px;border-radius:50%;
+            border:4px solid transparent;
+            border-top-color:var(--accent);
+            animation:spin 1s linear infinite;
+        }
+        @keyframes spin{ to{ transform:rotate(360deg) } }
+
+        /* Section transitions */
+        .content-section{ transition:opacity .34s ease, transform .34s ease; }
+        .hidden{ opacity:0; transform:translateY(6px); pointer-events:none; height:0; overflow:hidden; }
+        .visible{ opacity:1; transform:translateY(0); pointer-events:auto; height:auto; }
+
+        .row{display:flex;gap:0.5rem;align-items:center;width:100%}
+        footer{margin-top:1rem;color:var(--muted);font-size:11px;text-align:center; letter-spacing:0.08em;}
+        @media (max-width:520px){
+            .title{font-size:14px}
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Logo flotante pixelado (SVG de bloque estilo "grass block" simple) -->
+    <div class="logo-outer" title="Servidor">
+        <svg class="logo-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+            <!-- capa superior: césped (verde) -->
+            <rect x="0" y="0" width="64" height="16" fill="#63b54c"/>
+            <rect x="0" y="16" width="64" height="4" fill="#3f8f2f"/>
+            <!-- cuerpo: tierra -->
+            <rect x="0" y="20" width="64" height="28" fill="#8b5a32"/>
+            <!-- sombreado y pixeles -->
+            <rect x="6" y="24" width="6" height="6" fill="#6e3f1e"/>
+            <rect x="36" y="28" width="4" height="4" fill="#5b3822"/>
+            <rect x="48" y="30" width="3" height="3" fill="#6e3f1e"/>
+            <!-- borde -->
+            <rect x="0" y="48" width="64" height="16" fill="#4a2f20"/>
+            <!-- contorno tenue -->
+            <rect x="0.5" y="0.5" width="63" height="63" fill="none" stroke="#00000033" stroke-width="1"/>
+        </svg>
+    </div>
+
+    <main>
+        <header>
+            <div>
+                <h1 class="title">MINECRAFT JAVA Y BEDROCK EDITION</h1>
+                <p class="subtitle">Página informativa del servidor — compatible con Java y Bedrock</p>
+            </div>
+
+            <!-- Kebab menu -->
+            <div class="kebab" aria-hidden="false">
+                <button class="kebab-btn" id="kebab-btn" aria-label="Abrir menú">
+                    <!-- SVG con 3 barras; la clase kebab-float aplica la animación -->
+                    <svg class="kb-icon kebab-float" viewBox="0 0 20 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                        <path class="kb-bar" d="M1 2.5 L19 2.5" />
+                        <path class="kb-bar" d="M1 8 L19 8" />
+                        <path class="kb-bar" d="M1 13.5 L19 13.5" />
+                    </svg>
+                </button>
+                <div class="kebab-menu" id="kebab-menu" role="menu" aria-hidden="true">
+                    <button data-section="inicio">Inicio</button>
+                    <button data-section="rango">Solicitar un rango</button>
+                    <button data-section="admin">Administrativo</button>
+                    <button data-section="redes">Redes Sociales</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Contenedores por sección: Inicio (original), Rango, Admin, Redes -->
+        <section id="app-content">
+            <!-- Inicio: contenido original -->
+            <section class="card content-section visible" data-section="inicio" id="section-inicio">
+                <div class="grid">
+                    <div class="server-block">
+                        <div class="row" style="width:100%">
+                            <div>
+                                <div class="server-name">Servidor Java</div>
+                                <div class="server-desc">Conéctate usando la IP y puerto de Java (ativa plugins/mods según configuración).</div>
+                                <div class="ip" id="java-ip">play.ejemplo-servidor.com:25565</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="server-block">
+                        <div class="row" style="width:100%">
+                            <div>
+                                <div class="server-name">Servidor Bedrock</div>
+                                <div class="server-desc">Usa esta IP en la edición Bedrock (móvil/Windows 10/Consolas).</div>
+                                <div class="ip" id="bedrock-ip">play.ejemplo-servidor.com:19132</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="server-block" style="grid-column: span 2;">
+                        <div class="server-name">Estado</div>
+                        <div class="server-desc" id="status">Comprobando estado del servidor...</div>
+                        <div style="margin-top:0.6rem;font-size:13px;color:var(--muted)">Última comprobación: <span id="checked-time">—</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Solicitar un rango -->
+            <section class="card content-section hidden" data-section="rango" id="section-rango" aria-hidden="true">
+                <div class="server-name">Solicitar un rango</div>
+                <div class="server-desc">Rellena la solicitud y un administrador te contactará.</div>
+                <div style="margin-top:0.8rem">
+                    <!-- simple formulario de ejemplo -->
+                    <label style="display:block;font-size:10px;color:var(--muted);margin-bottom:6px">Tu usuario</label>
+                    <input style="width:100%;padding:8px;border-radius:6px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:#e6f0fb;font-family:inherit" placeholder="ej. Notch123">
+                    <div style="height:8px"></div>
+                    <button class="btn" style="font-size:11px">Enviar solicitud</button>
+                </div>
+            </section>
+
+            <!-- Administrativo -->
+            <section class="card content-section hidden" data-section="admin" id="section-admin" aria-hidden="true">
+                <div class="server-name">Administrativo</div>
+                <div class="server-desc">Herramientas y contactos para el equipo administrativo.</div>
+                <ul style="margin-top:0.6rem;color:var(--muted);font-size:11px">
+                    <li>Contactar: admin@ejemplo.com</li>
+                    <li>Reportes: sistema interno</li>
+                </ul>
+            </section>
+
+            <!-- Redes Sociales -->
+            <section class="card content-section hidden" data-section="redes" id="section-redes" aria-hidden="true">
+                <div class="server-name">Redes Sociales</div>
+                <div class="server-desc">Síguenos en nuestras plataformas.</div>
+                <div style="margin-top:0.6rem;display:flex;gap:8px">
+                    <a href="#" style="color:var(--accent);font-size:11px;text-decoration:none">Twitter</a>
+                    <a href="#" style="color:var(--accent);font-size:11px;text-decoration:none">Discord</a>
+                    <a href="#" style="color:var(--accent);font-size:11px;text-decoration:none">YouTube</a>
+                </div>
+            </section>
+        </section>
+
+        <footer class="card">
+            <div style="font-size:13px;color:var(--muted)">Página generada localmente. Cambia las IPs por las reales de tu servidor.</div>
+        </footer>
+    </main>
+
+    <!-- Loader overlay -->
+    <div id="loader" class="loader-overlay" aria-hidden="true">
+        <div class="spinner" role="status" aria-label="Cargando"></div>
+    </div>
+
+    <script>
+        /* Reemplaza el antiguo JS de copiado: nueva lógica de menú y cambio de secciones con loader/animación */
+        (function(){
+            const kebabBtn = document.getElementById('kebab-btn');
+            const kebabMenu = document.getElementById('kebab-menu');
+            // el icono de rayas dentro del botón
+            const kbIcon = kebabBtn.querySelector('.kb-icon');
+            const loader = document.getElementById('loader');
+            const sections = Array.from(document.querySelectorAll('.content-section'));
+
+            function getVisibleSection(){
+                return sections.find(s => s.classList.contains('visible')) || null;
+            }
+
+            function showMenu(toggle){
+                if(toggle){
+                    kebabMenu.classList.add('open');
+                    kebabMenu.setAttribute('aria-hidden','false');
+                    kebabBtn.setAttribute('aria-expanded','true');
+                }else{
+                    kebabMenu.classList.remove('open');
+                    kebabMenu.setAttribute('aria-hidden','true');
+                    kebabBtn.setAttribute('aria-expanded','false');
+                }
+            }
+
+            kebabBtn.addEventListener('click', ()=> showMenu(!kebabMenu.classList.contains('open')));
+            // asegurar que tocar las rayas también abra/cierre el menú (click + touch para móviles)
+            if(kbIcon){
+                kbIcon.addEventListener('click', (e)=> { e.stopPropagation(); showMenu(!kebabMenu.classList.contains('open')); });
+                kbIcon.addEventListener('touchstart', (e)=> { e.stopPropagation(); showMenu(!kebabMenu.classList.contains('open')); });
+            }
+            document.addEventListener('click', (e)=>{
+                if(!kebabMenu.contains(e.target) && e.target !== kebabBtn) showMenu(false);
+            });
+
+            // animaciones y cambio de sección
+            function switchSection(targetKey){
+                const current = getVisibleSection();
+                const target = sections.find(s => s.dataset.section === targetKey);
+                if(!target || current === target) { showMenu(false); return; }
+
+                // iniciar fade-out del actual
+                if(current){
+                    current.classList.remove('visible');
+                    current.classList.add('hidden');
+                    current.setAttribute('aria-hidden','true');
+                }
+
+                // mostrar loader
+                loader.classList.add('show');
+                loader.setAttribute('aria-hidden','false');
+
+                // simular tiempo de carga y luego mostrar la nueva sección con fade-in
+                setTimeout(()=>{
+                    // ocultar loader y mostrar target
+                    loader.classList.remove('show');
+                    loader.setAttribute('aria-hidden','true');
+
+                    target.classList.remove('hidden');
+                    // forzar reflow para garantizar transición
+                    void target.offsetWidth;
+                    target.classList.add('visible');
+                    target.setAttribute('aria-hidden','false');
+
+                }, 800); // duración total de carga (ajustable)
+
+                showMenu(false);
+            }
+
+            // asignar eventos a botones del menú
+            kebabMenu.querySelectorAll('button[data-section]').forEach(btn=>{
+                btn.addEventListener('click', ()=> switchSection(btn.getAttribute('data-section')));
+            });
+
+            // mantener la comprobación de estado existente (sin cambios funcionales)
+            function checkServer(){
+                const statusEl = document.getElementById('status');
+                const t = new Date();
+                document.getElementById('checked-time').textContent = t.toLocaleTimeString();
+                const online = Math.random() > 0.25;
+                if(online){
+                    statusEl.textContent = 'ONLINE — 12 jugadores';
+                    statusEl.style.color = '#bff8df';
+                }else{
+                    statusEl.textContent = 'OFFLINE — no responde';
+                    statusEl.style.color = '#f8c6c6';
+                }
+            }
+            checkServer();
+            setInterval(checkServer, 15000);
+        })();
+    </script>
+
+</body>
+</html>
